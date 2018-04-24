@@ -1,0 +1,4 @@
+{
+  "MysqlStr": "root:123456@tcp(127.0.0.1:3306)/website_favorites?charset=utf8",
+  "MaxOpen": 200
+}

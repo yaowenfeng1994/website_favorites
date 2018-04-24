@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"handler"
 )
 
 //func main(){
@@ -18,4 +19,5 @@ import (
 
 func main(){
 	fmt.Println("hello,this is my first golang project!")
+	handler.Insert()
 }
