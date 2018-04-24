@@ -7,10 +7,10 @@ import (
 )
 
 
-func InsertUser(mysqlPool *mysqlPool.SQLConnPool){
-	//fmt.Println(user)
+func InsertUser(mysqlPool *mysqlPool.SQLConnPool, user map[string]string){
+	fmt.Println(user)
 	lastuserid, err := mysqlPool.Insert("INSERT INTO user (`account`, `nickname`, `mail`, `create_time`)" +
-		" VALUES( ?, ?, ?, ?)", "610234", "yaowenfeng", "610733719@qq.com", 1000000000)
+		" VALUES( ?, ?, ?, ?)", user["account"], user["nickname"], user["mail"], user["create_time"])
 	if err != nil {
 		log.Fatal(err.Error())
 	}
