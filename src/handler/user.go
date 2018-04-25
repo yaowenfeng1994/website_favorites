@@ -30,7 +30,7 @@ func UserHandler(c *gin.Context) {
 		mail := data.Mail
 		data.Time = time.Now().Unix()
 		t := data.Time
-		UserId, err := model.InsertUser(Pool, account, nickname, mail, t)
+		UserId, err := model.InsertUser(account, nickname, mail, t)
 		respData["user_id"] = UserId
 		if err != nil {
 			resp.InitBaseResponse(0x0003, respData)

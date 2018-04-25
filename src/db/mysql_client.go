@@ -1,4 +1,4 @@
-package lib
+package db
 
 import (
 	"database/sql"
@@ -57,6 +57,6 @@ func (p *SQLConnPool) Insert(insertStr string, args ...interface{}) (int64, erro
 	if err != nil {
 		return 0, err
 	}
-	lastid, err := result.LastInsertId()
-	return lastid, err
+	LastId, err := result.LastInsertId()
+	return LastId, err
 }
