@@ -30,7 +30,6 @@ func InitMySQLPool(host, database, user, password, charset string, maxOpenConns,
 	return db
 }
 
-// SQLConnPool 结构体实现open方法
 func (p *SQLConnPool) open() error {
 	var err error
 	p.SQLDB, err = sql.Open(p.DriverName, p.DataSourceName)
