@@ -1,19 +1,11 @@
 package model
 
 import (
-	"fmt"
-	"log"
-	mysqlPool "db"
+	mysqlPool "lib"
 )
 
-
-func InsertUser(mysqlPool *mysqlPool.SQLConnPool, user map[string]string){
-	fmt.Println(user)
-	lastuserid, err := mysqlPool.Insert("INSERT INTO user (`account`, `nickname`, `mail`, `create_time`)" +
-		" VALUES( ?, ?, ?, ?)", user["account"], user["nickname"], user["mail"], user["create_time"])
-	if err != nil {
-		log.Fatal(err.Error())
-	}
-	fmt.Println(lastuserid)
-	log.Fatal("create account success!")
+func InsertUser(mysqlPool *mysqlPool.SQLConnPool, account string, nickname string, mail string, t int64) (int64, error) {
+	LastUserId, err := mysqlPool.Insert("INSERT INTO user (`account`, `nickname`, `mail`, `create_time`)" +
+		" VALUES( ?, ?, ?, ?)", account, nickname, mail, t)
+	return LastUserId, err
 }

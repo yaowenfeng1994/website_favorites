@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"handler"
+	"gopkg.in/gin-gonic/gin.v1"
 )
 
 //func main(){
@@ -19,5 +20,11 @@ import (
 
 func main(){
 	fmt.Println("hello,this is my first golang project!")
-	handler.Insert()
+	//handler.Insert()
+	gin.SetMode(gin.DebugMode)
+	r := gin.Default()
+
+	r.POST("/user", handler.UserHandler)
+	r.Run(":9999")
+
 }

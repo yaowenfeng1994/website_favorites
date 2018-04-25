@@ -1,33 +1,49 @@
 package handler
 
 import (
-	"db"
-	"model"
+	"gopkg.in/gin-gonic/gin.v1"
+	"log"
+	"net/http"
 	"time"
-	"strconv"
+	"model"
 )
 
-//type User struct {
-//	account  string
-//	nickname string
-//	mail     string
-//	time     int64
-//}
+type User struct {
+	Account  string  `form:"account" json:"account" binding:"required"`
+	Nickname string  `form:"nickname" json:"nickname" binding:"required"`
+	Mail     string  `form:"mail" json:"mail" binding:"required"`
+	Time     int64   `form:"time" json:"time" binding:"required"`
+}
 
+func UserHandler(c *gin.Context) {
+	var user  = map[string]User{}
+	var respData map[string]interface{}
 
-func Insert(){
-	//user := &User{
-	//	account: "6107337181",
-	//	nickname: "姚文锋",
-	//	mail: "",
-	//	time: time.Now().Unix(),
-	//}
-	var user map[string]string
-	user = make(map[string]string)
-	user["account"] = "143215"
-	user["nickname"] = "14325"
-	user["mail"] = ""
-	user["create_time"] = strconv.FormatInt(time.Now().Unix(), 10)
-	pool := db.InitMySQLPool("127.0.0.1", "website_favorites", "root", "1q2w3e", "utf8", 200, 100)
-	model.InsertUser(pool, user)
+	resp := BaseResponse{}
+	user = make(map[string]User)
+	respData = make(map[string]interface{})
+
+	if err := c.BindJSON(&user); err == nil{
+		data := user["data"]
+		account := data.Account
+		nickname := data.Nickname
+		mail := data.Mail
+		data.Time = time.Now().Unix()
+		t := data.Time
+		UserId, err := model.InsertUser(Pool, account, nickname, mail, t)
+		respData["user_id"] = UserId
+		if err != nil {
+			resp.InitBaseResponse(0x0003, respData)
+			log.Println(err.Error())
+			c.JSON(http.StatusBadRequest, resp)
+		} else {
+			resp.InitBaseResponse(0x0000, respData)
+			log.Printf("create account success(user_id: %d)!", UserId)
+			c.JSON(http.StatusOK, resp)
+		}
+
+	} else {
+		log.Print(err)
+		c.JSON(http.StatusBadRequest, resp)
+	}
 }
