@@ -9,7 +9,7 @@ type BaseResponse struct {
 
 var (
 	ErrMapping map[int][2]string
-	//Pool *db.SQLConnPool
+	//Pool *libs.SQLConnPool
 )
 
 func init() {
@@ -18,7 +18,7 @@ func init() {
 	ErrMapping[0x0001] = [2]string{"Unknown error", "未知错误"}
 	ErrMapping[0x0002] = [2]string{"Mismatch parameter", "参数不匹配"}
 	ErrMapping[0x0003] = [2]string{"Create account fail", "创建账号失败"}
-	//Pool = db.InitMySQLPool("127.0.0.1", "website_favorites", "root", "123456", "utf8", 200, 100)
+	//Pool = libs.InitMySQLPool("127.0.0.1", "website_favorites", "root", "123456", "utf8", 200, 100)
 }
 
 func (b *BaseResponse) InitBaseResponse(errCode int, d map[string]interface{}) {

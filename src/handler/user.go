@@ -1,28 +1,27 @@
 package handler
 
 import (
-	"fmt"
 	"log"
 	"time"
 	"model"
 	"net/http"
 	"github.com/gin-gonic/gin"
-	"github.com/gin-contrib/sessions"
+	"fmt"
 )
 
-type User struct {
-	Account  string  `form:"account" json:"account" binding:"required"`
-	Nickname string  `form:"nickname" json:"nickname" binding:"required"`
-	Mail     string  `form:"mail" json:"mail" binding:"required"`
-	Time     int64   `form:"time" json:"time" binding:"required"`
-}
+//type User struct {
+//	Account  string  `form:"account" json:"account" binding:"required"`
+//	Nickname string  `form:"nickname" json:"nickname" binding:"required"`
+//	Mail     string  `form:"mail" json:"mail" binding:"required"`
+//	Time     int64   `form:"time" json:"time" binding:"required"`
+//}
 
 func CreateUserHandler(c *gin.Context) {
-	var user  = map[string]User{}
+	var user  = map[string]gin.User{}
 	var respData map[string]interface{}
 
 	resp := BaseResponse{}
-	user = make(map[string]User)
+	user = make(map[string]gin.User)
 	respData = make(map[string]interface{})
 
 	if err := c.BindJSON(&user); err == nil{
@@ -49,22 +48,42 @@ func CreateUserHandler(c *gin.Context) {
 	}
 }
 
-func GetUserInfoHandler(c *gin.Context) {
-	account := c.Query("account")
-	session := sessions.Default(c)
-	fmt.Println(session.Options)
-	userAccessToken := session.Get(account)
-	fmt.Printf("[DoSomethine] user access token is %s\n", userAccessToken)
-	c.JSON(http.StatusOK, nil)
-}
+//func GetUserInfoHandler(c *gin.Context) {
+//	account := c.Query("account")
+//	session := sessions.Default(c)
+//	fmt.Println(session.Options)
+//	userAccessToken := session.Get(account)
+//	fmt.Printf("[DoSomethine] user access token is %s\n", userAccessToken)
+//	c.JSON(http.StatusOK, nil)
+//}
+//
+func LoginHandler(c *gin.Context, w http.ResponseWriter) {
 
-func LoginHandler(c *gin.Context) {
 	account := c.PostForm("account")
+	nickname := c.PostForm("nickname")
 	fmt.Println(account)
+
 	if account == "610733719"{
-		session := sessions.Default(c)
-		session.Set("610733719", "610733719haha123")
-		session.Save()
+		var sessionMgr *gin.SessionMgr
+		sessionMgr = gin.NewSessionMgr("TestCookieName", 20)
+
+		var sessionID = sessionMgr.StartSession(w)
+		var loginUserInfo = gin.User{Account: account, Nickname: nickname}
+		var loginUserInfoPointer *gin.User
+		loginUserInfoPointer = &loginUserInfo
+		var onlineSessionIDList = sessionMgr.GetSessionIDList()
+
+		for _, onlineSessionID := range onlineSessionIDList {
+			if userInfo, ok := sessionMgr.GetSessionVal(onlineSessionID, account); ok {
+				if value, ok := userInfo.(gin.User); ok {
+					if value.Account == account {
+						sessionMgr.EndSessionBy(onlineSessionID)
+						}
+					}
+				}
+			}
+		sessionMgr.SetSessionVal(sessionID, account, loginUserInfoPointer)
+
 		c.JSON(http.StatusOK, gin.H{
 			"login_success": 1,
 		})

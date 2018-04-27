@@ -1,4 +1,4 @@
-package db
+package libs
 
 import (
 	"database/sql"
