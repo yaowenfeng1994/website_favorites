@@ -1,11 +1,13 @@
 package handler
 
 import (
-	"gopkg.in/gin-gonic/gin.v1"
+	"fmt"
 	"log"
-	"net/http"
 	"time"
 	"model"
+	"net/http"
+	"github.com/gin-gonic/gin"
+	"github.com/gin-contrib/sessions"
 )
 
 type User struct {
@@ -15,7 +17,7 @@ type User struct {
 	Time     int64   `form:"time" json:"time" binding:"required"`
 }
 
-func UserHandler(c *gin.Context) {
+func CreateUserHandler(c *gin.Context) {
 	var user  = map[string]User{}
 	var respData map[string]interface{}
 
@@ -41,9 +43,35 @@ func UserHandler(c *gin.Context) {
 			log.Printf("create account success(user_id: %d)!", UserId)
 			c.JSON(http.StatusOK, resp)
 		}
-
 	} else {
 		log.Print(err)
 		c.JSON(http.StatusBadRequest, resp)
 	}
 }
+
+func GetUserInfoHandler(c *gin.Context) {
+	account := c.Query("account")
+	session := sessions.Default(c)
+	fmt.Println(session.Options)
+	userAccessToken := session.Get(account)
+	fmt.Printf("[DoSomethine] user access token is %s\n", userAccessToken)
+	c.JSON(http.StatusOK, nil)
+}
+
+func LoginHandler(c *gin.Context) {
+	account := c.PostForm("account")
+	fmt.Println(account)
+	if account == "610733719"{
+		session := sessions.Default(c)
+		session.Set("610733719", "610733719haha123")
+		session.Save()
+		c.JSON(http.StatusOK, gin.H{
+			"login_success": 1,
+		})
+	} else {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"login_success": 0,
+		})
+	}
+}
+

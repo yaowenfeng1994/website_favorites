@@ -2,21 +2,11 @@ package main
 
 import (
 	"fmt"
+	"time"
 	"handler"
-	"gopkg.in/gin-gonic/gin.v1"
+	"github.com/gin-gonic/gin"
+	"github.com/gin-contrib/sessions"
 )
-
-//func main(){
-//
-//	router := gin.Default()
-//
-//	router.GET("/get", func(c *gin.Context) {
-//		firstname := c.DefaultQuery("firstname", "Guest")
-//		lastname := c.Query("lastname")
-//		c.String(http.StatusOK,"Hello %s %s", firstname, lastname)
-//	})
-//	router.Run(":8000")
-//}
 
 func main(){
 	fmt.Println("hello,this is my first golang project!")
@@ -24,7 +14,16 @@ func main(){
 	gin.SetMode(gin.DebugMode)
 	r := gin.Default()
 
-	r.POST("/user", handler.UserHandler)
-	r.Run(":9999")
+	store := sessions.NewCookieStore([]byte("secret"))
+	store.Options(sessions.Options{
+		MaxAge: int(10 * time.Second), //1min
+		Path:   "/",
+	})
+	fmt.Println(store)
+	r.Use(sessions.Sessions("mysession", store))
 
+	r.POST("/user/create", handler.CreateUserHandler)
+	r.POST("/user/login", handler.LoginHandler)
+	r.GET("/user/get", handler.GetUserInfoHandler)
+	r.Run(":9999")
 }
