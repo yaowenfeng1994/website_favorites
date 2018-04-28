@@ -6,7 +6,7 @@ import (
 	"model"
 	"net/http"
 	"github.com/gin-gonic/gin"
-	"fmt"
+	"libs"
 )
 
 //type User struct {
@@ -16,12 +16,18 @@ import (
 //	Time     int64   `form:"time" json:"time" binding:"required"`
 //}
 
+var sessionMgr *libs.SessionMgr = nil
+
+func init() {
+	sessionMgr = libs.NewSessionMgr("TestCookieName", 60)
+}
+
 func CreateUserHandler(c *gin.Context) {
-	var user  = map[string]gin.User{}
+	var user  = map[string]libs.User{}
 	var respData map[string]interface{}
 
 	resp := BaseResponse{}
-	user = make(map[string]gin.User)
+	user = make(map[string]libs.User)
 	respData = make(map[string]interface{})
 
 	if err := c.BindJSON(&user); err == nil{
@@ -48,34 +54,34 @@ func CreateUserHandler(c *gin.Context) {
 	}
 }
 
-//func GetUserInfoHandler(c *gin.Context) {
-//	account := c.Query("account")
-//	session := sessions.Default(c)
-//	fmt.Println(session.Options)
-//	userAccessToken := session.Get(account)
-//	fmt.Printf("[DoSomethine] user access token is %s\n", userAccessToken)
-//	c.JSON(http.StatusOK, nil)
-//}
-//
-func LoginHandler(c *gin.Context, w http.ResponseWriter) {
+func GetUserInfoHandler(c *gin.Context) {
+	var sessionID = sessionMgr.CheckCookieValid(c.Writer, c.Request)
+	if sessionID == "" {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"login_success": 0,
+		})
+	}else {
+		c.JSON(http.StatusOK, gin.H{
+			"login_success": 1,
+		})
+	}
+}
 
-	account := c.PostForm("account")
-	nickname := c.PostForm("nickname")
-	fmt.Println(account)
+func LoginHandler(c *gin.Context) {
+
+	account := c.Query("account")
+	nickname := c.Query("nickname")
 
 	if account == "610733719"{
-		var sessionMgr *gin.SessionMgr
-		sessionMgr = gin.NewSessionMgr("TestCookieName", 20)
-
-		var sessionID = sessionMgr.StartSession(w)
-		var loginUserInfo = gin.User{Account: account, Nickname: nickname}
-		var loginUserInfoPointer *gin.User
+		var sessionID = sessionMgr.StartSession(c.Writer, c.Request)
+		var loginUserInfo = libs.User{Account: account, Nickname: nickname}
+		var loginUserInfoPointer *libs.User
 		loginUserInfoPointer = &loginUserInfo
 		var onlineSessionIDList = sessionMgr.GetSessionIDList()
 
 		for _, onlineSessionID := range onlineSessionIDList {
 			if userInfo, ok := sessionMgr.GetSessionVal(onlineSessionID, account); ok {
-				if value, ok := userInfo.(gin.User); ok {
+				if value, ok := userInfo.(libs.User); ok {
 					if value.Account == account {
 						sessionMgr.EndSessionBy(onlineSessionID)
 						}
@@ -94,3 +100,17 @@ func LoginHandler(c *gin.Context, w http.ResponseWriter) {
 	}
 }
 
+func LogoutHandler(c *gin.Context) {
+	sessionMgr.EndSession(c.Writer, c.Request) //用户退出时删除对应session
+	var sessionID = sessionMgr.CheckCookieValid(c.Writer, c.Request)
+	if sessionID == "" {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"login_success": 0,
+		})
+	}else {
+		c.JSON(http.StatusOK, gin.H{
+			"login_success": 1,
+		})
+	}
+	return
+}

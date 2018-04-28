@@ -14,7 +14,8 @@ func main(){
 	r := gin.Default()
 
 	r.POST("/user/create", handler.CreateUserHandler)
-	r.POST("/user/login", handler.LoginHandler)
-	//r.GET("/user/get", handler.GetUserInfoHandler)
+	r.GET("/user/login", handler.LoginHandler)
+	r.GET("/user/logout", handler.LogoutHandler)
+	r.GET("/user/get", handler.GetUserInfoHandler)
 	r.Run(":9999")
 }
