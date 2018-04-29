@@ -60,3 +60,41 @@ func (p *SQLConnPool) Insert(insertStr string, args ...interface{}) (int64, erro
 	LastId, err := result.LastInsertId()
 	return LastId, err
 }
+
+// SQLConnTransaction is for transaction connection
+type SQLConnTransaction struct {
+	SQLTX *sql.Tx
+}
+
+// Begin transaction
+func (p *SQLConnPool) Begin() (*SQLConnTransaction, error) {
+	var oneSQLConnTransaction = &SQLConnTransaction{}
+	var err error
+	if pingErr := p.SQLDB.Ping(); pingErr == nil {
+		oneSQLConnTransaction.SQLTX, err = p.SQLDB.Begin()
+	}
+	return oneSQLConnTransaction, err
+}
+
+// Rollback transaction
+func (t *SQLConnTransaction) Rollback() error {
+	return t.SQLTX.Rollback()
+}
+
+// Commit transaction
+func (t *SQLConnTransaction) Commit() error {
+	return t.SQLTX.Commit()
+}
+
+func (t *SQLConnTransaction) execute(sqlStr string, args ...interface{}) (sql.Result, error) {
+	return t.SQLTX.Exec(sqlStr, args...)
+}
+
+func (t *SQLConnTransaction) Insert(insertStr string, args ...interface{}) (int64, error) {
+	result, err := t.execute(insertStr, args...)
+	if err != nil {
+		return 0, err
+	}
+	LastId, err := result.LastInsertId()
+	return LastId, err
+}

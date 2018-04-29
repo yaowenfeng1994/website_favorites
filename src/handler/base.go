@@ -4,7 +4,7 @@ type BaseResponse struct {
 	ErrCode  int                     `json:"err_code"`
 	ErrMsg   string                  `json:"err_msg"`
 	ErrMsgEn string                  `json:"err_msg_en"`
-	Data     map[string]interface{} `json:"data"`
+	Data     map[string]interface{}  `json:"data"`
 }
 
 var (

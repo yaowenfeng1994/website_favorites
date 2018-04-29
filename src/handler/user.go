@@ -1,12 +1,14 @@
 package handler
 
 import (
-	"log"
+
 	"time"
-	"model"
+
 	"net/http"
 	"github.com/gin-gonic/gin"
 	"libs"
+	"model"
+	"log"
 )
 
 //type User struct {
@@ -22,39 +24,33 @@ func init() {
 	sessionMgr = libs.NewSessionMgr("TestCookieName", 60)
 }
 
-func CreateUserHandler(c *gin.Context) {
-	var user  = map[string]libs.User{}
+func CreateUserApi(c *gin.Context) {
+	//var user  = map[string]libs.User{}
+	account := c.PostForm("account")
+	nickname := c.PostForm("nickname")
+	mail := c.PostForm("mail")
+	password := c.PostForm("password")
+	t := time.Now().Unix()
 	var respData map[string]interface{}
 
 	resp := BaseResponse{}
-	user = make(map[string]libs.User)
+	//user = make(map[string]libs.User)
 	respData = make(map[string]interface{})
 
-	if err := c.BindJSON(&user); err == nil{
-		data := user["data"]
-		account := data.Account
-		nickname := data.Nickname
-		mail := data.Mail
-		data.Time = time.Now().Unix()
-		t := data.Time
-		UserId, err := model.InsertUser(account, nickname, mail, t)
-		respData["user_id"] = UserId
-		if err != nil {
-			resp.InitBaseResponse(0x0003, respData)
-			log.Println(err.Error())
-			c.JSON(http.StatusBadRequest, resp)
-		} else {
-			resp.InitBaseResponse(0x0000, respData)
-			log.Printf("create account success(user_id: %d)!", UserId)
-			c.JSON(http.StatusOK, resp)
-		}
-	} else {
-		log.Print(err)
+	UserId, err := model.InsertUser(account, nickname, mail, password, t)
+	respData["user_id"] = UserId
+	if err != nil {
+		resp.InitBaseResponse(0x0003, respData)
+		log.Println(err.Error())
 		c.JSON(http.StatusBadRequest, resp)
+	} else {
+		resp.InitBaseResponse(0x0000, respData)
+		log.Printf("create account success(user_id: %d)!", UserId)
+		c.JSON(http.StatusOK, resp)
 	}
 }
 
-func GetUserInfoHandler(c *gin.Context) {
+func GetUserInfoApi(c *gin.Context) {
 	var sessionID = sessionMgr.CheckCookieValid(c.Writer, c.Request)
 	if sessionID == "" {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -67,14 +63,14 @@ func GetUserInfoHandler(c *gin.Context) {
 	}
 }
 
-func LoginHandler(c *gin.Context) {
+func LoginApi(c *gin.Context) {
 
-	account := c.Query("account")
-	nickname := c.Query("nickname")
+	account := c.PostForm("account")
+	password := c.PostForm("password")
 
 	if account == "610733719"{
 		var sessionID = sessionMgr.StartSession(c.Writer, c.Request)
-		var loginUserInfo = libs.User{Account: account, Nickname: nickname}
+		var loginUserInfo = libs.User{Account: account, Password: password}
 		var loginUserInfoPointer *libs.User
 		loginUserInfoPointer = &loginUserInfo
 		var onlineSessionIDList = sessionMgr.GetSessionIDList()
@@ -100,7 +96,7 @@ func LoginHandler(c *gin.Context) {
 	}
 }
 
-func LogoutHandler(c *gin.Context) {
+func LogoutApi(c *gin.Context) {
 	sessionMgr.EndSession(c.Writer, c.Request) //用户退出时删除对应session
 	var sessionID = sessionMgr.CheckCookieValid(c.Writer, c.Request)
 	if sessionID == "" {

@@ -15,6 +15,7 @@ type User struct {
 Account  string
 Nickname string
 Mail     string
+Password string
 Time     int64
 }
 
