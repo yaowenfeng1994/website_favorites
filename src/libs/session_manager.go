@@ -128,9 +128,8 @@ return sessionIDList[0:len(sessionIDList)]
 func (mgr *SessionMgr) CheckCookieValid(w http.ResponseWriter, r *http.Request) string {
 var cookie, err = r.Cookie(mgr.CookieName)
 
-if cookie == nil ||
-err != nil {
-return ""
+if cookie == nil || err != nil {
+	return ""
 }
 
 mgr.Lock.Lock()

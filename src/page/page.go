@@ -6,12 +6,12 @@ import (
 )
 
 func RegisterPage(c *gin.Context) {
-	c.HTML(http.StatusOK, "register.html", gin.H{"user": "User"})
+	c.HTML(http.StatusOK, "register.html", gin.H{"developer": "YaoWenFenG"})
 	return
 }
 
 
 func LoginPage(c *gin.Context) {
-	c.HTML(http.StatusOK, "login.html", gin.H{"user": "User"})
+	c.HTML(http.StatusOK, "login.html", gin.H{"developer": "YaoWenFenG"})
 	return
 }

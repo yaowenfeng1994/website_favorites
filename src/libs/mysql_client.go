@@ -48,6 +48,36 @@ func (p *SQLConnPool) Close() error {
 	return p.SQLDB.Close()
 }
 
+func (p *SQLConnPool) Query(queryStr string, args ...interface{}) ([]map[string]interface{}, error) {
+	rows, err := p.SQLDB.Query(queryStr, args...)
+	if err != nil {
+		log.Println(err)
+		return []map[string]interface{}{}, err
+	}
+	defer rows.Close()
+	columns, _ := rows.Columns()
+	scanArgs := make([]interface{}, len(columns))
+	values := make([]interface{}, len(columns))
+	for i := range values {
+		scanArgs[i] = &values[i]
+	}
+	rowsMap := make([]map[string]interface{}, 0, 10)
+	for rows.Next() {
+		err = rows.Scan(scanArgs...)
+		rowMap := make(map[string]interface{})
+		for i, col := range values {
+			if col != nil {
+				rowMap[columns[i]] = string(col.([]byte))
+			}
+		}
+		rowsMap = append(rowsMap, rowMap)
+	}
+	if err = rows.Err(); err != nil {
+		return []map[string]interface{}{}, err
+	}
+	return rowsMap, nil
+}
+
 func (p *SQLConnPool) execute(sqlStr string, args ...interface{}) (sql.Result, error) {
 	return p.SQLDB.Exec(sqlStr, args...)
 }

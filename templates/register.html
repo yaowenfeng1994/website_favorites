@@ -42,7 +42,8 @@
                 <div class="form-group">
                     <label for="inputAccount" class="col-sm-2 control-label" style="word-break:keep-all">账号</label>
                     <div class="col-sm-10">
-                        <input class="form-control" id="inputAccount" maxlength="20" minlength="6" name="account"/>
+                        <input class="form-control" id="inputAccount" maxlength="20" minlength="6"
+                               onKeypress="javascript:if(event.keyCode == 32)event.returnValue = false;" name="account"/>
                         <script>
                             var oInput = document.getElementById('inputAccount'),
                                     oP = document.querySelector('input');
@@ -54,28 +55,32 @@
                 <div class="form-group">
                     <label for="inputNickname" class="col-sm-2 control-label" style="word-break:keep-all">昵称</label>
                     <div class="col-sm-10">
-                        <input class="form-control" id="inputNickname" maxlength="20" minlength="1" name="nickname"/>
+                        <input class="form-control" id="inputNickname" maxlength="20" minlength="1"
+                               onKeypress="javascript:if(event.keyCode == 32)event.returnValue = false;" name="nickname"/>
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label for="inputEmail" class="col-sm-2 control-label" style="word-break:keep-all">电子邮箱</label>
                     <div class="col-sm-10">
-                        <input type="email" class="form-control" id="inputEmail" maxlength="60" minlength="6" name="mail"/>
+                        <input type="email" class="form-control" id="inputEmail" maxlength="60" minlength="6"
+                               onKeypress="javascript:if(event.keyCode == 32)event.returnValue = false;" name="mail"/>
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label for="inputPassword" class="col-sm-2 control-label" style="word-break:keep-all">密码</label>
                     <div class="col-sm-10">
-                        <input class="form-control" id="inputPassword" maxlength="20" minlength="6"/>
+                        <input class="form-control" id="inputPassword" maxlength="20" minlength="6"
+                               onKeypress="javascript:if(event.keyCode == 32)event.returnValue = false;"/>
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label for="confirmPassword" class="col-sm-2 control-label" style="word-break:keep-all">确认密码</label>
                     <div class="col-sm-10">
-                        <input class="form-control" id="confirmPassword" maxlength="20" minlength="6" name="password"/>
+                        <input class="form-control" id="confirmPassword" maxlength="20" minlength="6"
+                               onKeypress="javascript:if(event.keyCode == 32)event.returnValue = false;" name="password"/>
                     </div>
                 </div>
                 {{/*<div class="form-group">*/}}

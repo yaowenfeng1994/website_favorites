@@ -1,6 +1,6 @@
 <html>
 <head>
-    <title>注册</title>
+    <title>登陆</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
     <script type="text/javascript">
@@ -27,7 +27,8 @@
                 <div class="form-group">
                     <label for="inputAccount" class="col-sm-2 control-label" style="word-break:keep-all">账号</label>
                     <div class="col-sm-10">
-                        <input class="form-control" id="inputAccount" maxlength="20" minlength="6" name="account"/>
+                        <input class="form-control" id="inputAccount" maxlength="20" minlength="6"
+                               onKeypress="javascript:if(event.keyCode == 32)event.returnValue = false;" name="account"/>
                         <script>
                             var oInput = document.getElementById('inputAccount'),
                                     oP = document.querySelector('input');
@@ -39,7 +40,8 @@
                 <div class="form-group">
                     <label for="inputPassword" class="col-sm-2 control-label" style="word-break:keep-all">密码</label>
                     <div class="col-sm-10">
-                        <input class="form-control" id="inputPassword" maxlength="20" minlength="6"/>
+                        <input class="form-control" id="inputPassword" maxlength="20" minlength="6"
+                               onKeypress="javascript:if(event.keyCode == 32)event.returnValue = false;" name="password"/>
                     </div>
                 </div>
 
