@@ -17,11 +17,13 @@ func main(){
 	r.LoadHTMLGlob("templates/*")
 
 	r.GET("/user/create", page.RegisterPage)
+	r.GET("/user/create_success", page.RegisterSuccessPage)
 	r.POST("/user/create", handler.CreateUserApi)
 
 	r.GET("/user/login", page.LoginPage)
 	r.POST("/user/login", handler.LoginApi)
 
+	r.GET("/folder", handler.GetFolderListApi)
 	r.GET("/user/logout", handler.LogoutApi)
 	r.GET("/user/get", handler.GetUserInfoApi)
 	r.Run(":9999")

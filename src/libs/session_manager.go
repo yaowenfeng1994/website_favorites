@@ -88,22 +88,22 @@ delete(mgr.Sessions, sessionID)
 }
 
 //设置session里面的值
-func (mgr *SessionMgr) SetSessionVal(sessionID string, account string, user *User) {
+func (mgr *SessionMgr) SetSessionVal(sessionID string, user *User) {
 mgr.Lock.Lock()
 defer mgr.Lock.Unlock()
 
 if session, ok := mgr.Sessions[sessionID]; ok {
-session.Values[account] = user
+session.Values["UserInfo"] = user
 }
 }
 
 //得到session里面的值
-func (mgr *SessionMgr) GetSessionVal(sessionID string, account string) (interface{}, bool) {
+func (mgr *SessionMgr) GetSessionVal(sessionID string) (interface{}, bool) {
 mgr.Lock.RLock()
 defer mgr.Lock.RUnlock()
 
 if session, ok := mgr.Sessions[sessionID]; ok {
-if val, ok := session.Values[account]; ok {
+if val, ok := session.Values["UserInfo"]; ok {
 return val, ok
 }
 }

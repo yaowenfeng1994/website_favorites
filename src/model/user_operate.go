@@ -59,6 +59,9 @@ func InsertUser(account string, nickname string, mail string, password string, t
 	}
 }
 
+
+
+
 func QueryUserPassword(account string) ([]gin.H, error) {
 	var DbData []gin.H
 	rows, err := Pool.Query("SELECT password From password LEFT JOIN user " +

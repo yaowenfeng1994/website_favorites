@@ -1,7 +1,5 @@
 package model
 
-import "github.com/gin-gonic/gin"
-
 //func DefaultCreateFolder(account string, t int64) *SQLConnTransaction {
 //	Tx, err := Pool.Begin()
 //	UserId := AccountGetUserId(account)
@@ -20,6 +18,6 @@ import "github.com/gin-gonic/gin"
 //	}
 //}
 
-func QueryFolder(account string) ([]gin.H, error) {
-
-}
+//func QueryFolder(account string) ([]gin.H, error) {
+//
+//}

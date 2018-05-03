@@ -16,7 +16,6 @@ func init() {
 }
 
 func CreateUserApi(c *gin.Context) {
-	//var user  = map[string]libs.User{}
 	account := c.PostForm("account")
 	nickname := c.PostForm("nickname")
 	mail := c.PostForm("mail")
@@ -60,7 +59,7 @@ func LoginApi(c *gin.Context) {
 	password := c.PostForm("password")
 
 	DbData, err := model.QueryUserPassword(account)
-	if err != nil {
+	if err != nil || len(DbData) == 0{
 		c.JSON(http.StatusBadRequest, gin.H{
 			"login_success": 0,
 		})
@@ -74,7 +73,7 @@ func LoginApi(c *gin.Context) {
 			var onlineSessionIDList = sessionMgr.GetSessionIDList()
 
 			for _, onlineSessionID := range onlineSessionIDList {
-				if userInfo, ok := sessionMgr.GetSessionVal(onlineSessionID, account); ok {
+				if userInfo, ok := sessionMgr.GetSessionVal(onlineSessionID); ok {
 					if value, ok := userInfo.(libs.User); ok {
 						if value.Account == account {
 							sessionMgr.EndSessionBy(onlineSessionID)
@@ -82,7 +81,7 @@ func LoginApi(c *gin.Context) {
 						}
 					}
 				}
-			sessionMgr.SetSessionVal(sessionID, account, loginUserInfoPointer)
+			sessionMgr.SetSessionVal(sessionID, loginUserInfoPointer)
 
 			c.JSON(http.StatusOK, gin.H{
 				"login_success": 1,

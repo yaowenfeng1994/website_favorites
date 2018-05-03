@@ -10,8 +10,13 @@ func RegisterPage(c *gin.Context) {
 	return
 }
 
+func RegisterSuccessPage(c *gin.Context) {
+	c.HTML(http.StatusOK, "register_success.html", gin.H{"developer": "YaoWenFenG"})
+	return
+}
 
 func LoginPage(c *gin.Context) {
 	c.HTML(http.StatusOK, "login.html", gin.H{"developer": "YaoWenFenG"})
 	return
 }
+
