@@ -57,7 +57,8 @@ func (p *SQLConnPool) Query(queryStr string, args ...interface{}) ([]map[string]
 	defer rows.Close()
 	columns, _ := rows.Columns()
 	scanArgs := make([]interface{}, len(columns))
-	values := make([]interface{}, len(columns))
+	//values := make([]interface{}, len(columns))
+	values := make([]sql.RawBytes, len(columns))
 	for i := range values {
 		scanArgs[i] = &values[i]
 	}
@@ -67,7 +68,8 @@ func (p *SQLConnPool) Query(queryStr string, args ...interface{}) ([]map[string]
 		rowMap := make(map[string]interface{})
 		for i, col := range values {
 			if col != nil {
-				rowMap[columns[i]] = string(col.([]byte))
+				//rowMap[columns[i]] = string(col.([]byte))
+				rowMap[columns[i]] = string(col)
 			}
 		}
 		rowsMap = append(rowsMap, rowMap)

@@ -18,6 +18,8 @@ func init() {
 	ErrMapping[0x0001] = [2]string{"Unknown error", "未知错误"}
 	ErrMapping[0x0002] = [2]string{"Mismatch parameter", "参数不匹配"}
 	ErrMapping[0x0003] = [2]string{"Create account fail", "创建账号失败"}
+	ErrMapping[0x0004] = [2]string{"Please login first", "请先登陆"}
+	ErrMapping[0x0005] = [2]string{"Login failed, account or password is incorrect", "登陆失败，账号或者密码有误"}
 	//Pool = libs.InitMySQLPool("127.0.0.1", "website_favorites", "root", "123456", "utf8", 200, 100)
 }
 

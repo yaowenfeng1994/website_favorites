@@ -18,6 +18,20 @@ package model
 //	}
 //}
 
-//func QueryFolder(account string) ([]gin.H, error) {
-//
-//}
+func QueryFolder(account string) ([]map[string]interface{}, error) {
+	var DbData []map[string]interface{}
+	rows, err := Pool.Query("SELECT folder.id as folder_id, folder_name From folder LEFT JOIN user " +
+		"ON user.id = folder.user_id WHERE user.account = ?", account)
+	if err != nil {
+		return DbData, err
+	} else {
+		if len(rows) > 0 {
+			//for _, row := range rows {
+			//	DbData = append(DbData, gin.H(row))
+			//}
+			return rows, err
+		} else {
+			return DbData, err
+		}
+	}
+}

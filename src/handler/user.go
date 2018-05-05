@@ -40,18 +40,18 @@ func CreateUserApi(c *gin.Context) {
 	}
 }
 
-func GetUserInfoApi(c *gin.Context) {
-	var sessionID = sessionMgr.CheckCookieValid(c.Writer, c.Request)
-	if sessionID == "" {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"login_success": 0,
-		})
-	}else {
-		c.JSON(http.StatusOK, gin.H{
-			"login_success": 1,
-		})
-	}
-}
+//func GetUserInfoApi(c *gin.Context) {
+//	var sessionID = sessionMgr.CheckCookieValid(c.Writer, c.Request)
+//	if sessionID == "" {
+//		c.JSON(http.StatusBadRequest, gin.H{
+//			"login_success": 0,
+//		})
+//	}else {
+//		c.JSON(http.StatusOK, gin.H{
+//			"login_success": 1,
+//		})
+//	}
+//}
 
 func LoginApi(c *gin.Context) {
 
@@ -59,10 +59,13 @@ func LoginApi(c *gin.Context) {
 	password := c.PostForm("password")
 
 	DbData, err := model.QueryUserPassword(account)
+
+	var respData map[string]interface{}
+	resp := BaseResponse{}
+	respData = make(map[string]interface{})
 	if err != nil || len(DbData) == 0{
-		c.JSON(http.StatusBadRequest, gin.H{
-			"login_success": 0,
-		})
+		resp.InitBaseResponse(0x0005, respData)
+		c.JSON(http.StatusBadRequest, resp)
 	} else {
 		DbDataResult := DbData[0]
 		if DbDataResult["password"] == password {
@@ -87,38 +90,10 @@ func LoginApi(c *gin.Context) {
 				"login_success": 1,
 			})
 		} else {
-			c.JSON(http.StatusBadRequest, gin.H{
-				"login_success": 0,
-			})
+			resp.InitBaseResponse(0x0005, respData)
+			c.JSON(http.StatusBadRequest, resp)
 		}
 	}
-
-	//if account == "610733719"{
-	//	var sessionID = sessionMgr.StartSession(c.Writer, c.Request)
-	//	var loginUserInfo = libs.User{Account: account, Password: password}
-	//	var loginUserInfoPointer *libs.User
-	//	loginUserInfoPointer = &loginUserInfo
-	//	var onlineSessionIDList = sessionMgr.GetSessionIDList()
-	//
-	//	for _, onlineSessionID := range onlineSessionIDList {
-	//		if userInfo, ok := sessionMgr.GetSessionVal(onlineSessionID, account); ok {
-	//			if value, ok := userInfo.(libs.User); ok {
-	//				if value.Account == account {
-	//					sessionMgr.EndSessionBy(onlineSessionID)
-	//					}
-	//				}
-	//			}
-	//		}
-	//	sessionMgr.SetSessionVal(sessionID, account, loginUserInfoPointer)
-	//
-	//	c.JSON(http.StatusOK, gin.H{
-	//		"login_success": 1,
-	//	})
-	//} else {
-	//	c.JSON(http.StatusBadRequest, gin.H{
-	//		"login_success": 0,
-	//	})
-	//}
 }
 
 func LogoutApi(c *gin.Context) {

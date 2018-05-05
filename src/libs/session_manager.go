@@ -104,7 +104,7 @@ defer mgr.Lock.RUnlock()
 
 if session, ok := mgr.Sessions[sessionID]; ok {
 if val, ok := session.Values["UserInfo"]; ok {
-return val, ok
+return val.Account, ok
 }
 }
 return nil, false

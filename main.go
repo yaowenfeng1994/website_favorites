@@ -25,6 +25,6 @@ func main(){
 
 	r.GET("/folder", handler.GetFolderListApi)
 	r.GET("/user/logout", handler.LogoutApi)
-	r.GET("/user/get", handler.GetUserInfoApi)
+	//r.GET("/user/get", handler.GetUserInfoApi)
 	r.Run(":9999")
 }
