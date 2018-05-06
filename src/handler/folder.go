@@ -3,7 +3,6 @@ package handler
 import (
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"fmt"
 	"model"
 )
 
@@ -29,10 +28,8 @@ func GetFolderListApi(c *gin.Context) {
 		resp.InitBaseResponse(0x0004, respData)
 		c.JSON(http.StatusBadRequest, resp)
 	} else {
-		//var a= []string{"a", "b", "c", "d", "ee"}
 		account, ok := sessionMgr.GetSessionVal(sessionID)
 		if ok {
-			fmt.Println(account)
 			switch account := account.(type) {
 			case string:
 				DbData, err := model.QueryFolder(account)
@@ -40,7 +37,6 @@ func GetFolderListApi(c *gin.Context) {
 					resp.InitBaseResponse(0x0002, respData)
 					c.JSON(http.StatusBadRequest, resp)
 				} else {
-					fmt.Println(DbData)
 					c.HTML(http.StatusOK,
 						"folder.html",
 						gin.H{

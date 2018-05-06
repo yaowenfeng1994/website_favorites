@@ -26,9 +26,6 @@ func QueryFolder(account string) ([]map[string]interface{}, error) {
 		return DbData, err
 	} else {
 		if len(rows) > 0 {
-			//for _, row := range rows {
-			//	DbData = append(DbData, gin.H(row))
-			//}
 			return rows, err
 		} else {
 			return DbData, err

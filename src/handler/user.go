@@ -24,7 +24,6 @@ func CreateUserApi(c *gin.Context) {
 	var respData map[string]interface{}
 
 	resp := BaseResponse{}
-	//user = make(map[string]libs.User)
 	respData = make(map[string]interface{})
 
 	UserId, err := model.InsertUser(account, nickname, mail, password, t)
@@ -34,9 +33,10 @@ func CreateUserApi(c *gin.Context) {
 		log.Println(err.Error())
 		c.JSON(http.StatusBadRequest, resp)
 	} else {
-		resp.InitBaseResponse(0x0000, respData)
+		//resp.InitBaseResponse(0x0000, respData)
 		log.Printf("create account success(user_id: %d)!", UserId)
-		c.JSON(http.StatusOK, resp)
+		c.HTML(http.StatusOK, "register_success.html", gin.H{"developer": "YaoWenFenG"})
+		//c.JSON(http.StatusOK, resp)
 	}
 }
 
@@ -86,9 +86,18 @@ func LoginApi(c *gin.Context) {
 				}
 			sessionMgr.SetSessionVal(sessionID, loginUserInfoPointer)
 
-			c.JSON(http.StatusOK, gin.H{
-				"login_success": 1,
-			})
+			// 登陆成功后默认进入目录列表
+			DbData, err := model.QueryFolder(account)
+			if err != nil {
+				resp.InitBaseResponse(0x0002, respData)
+				c.JSON(http.StatusBadRequest, resp)
+			} else {
+				c.HTML(http.StatusOK,
+					"folder.html",
+					gin.H{
+						"list": DbData,
+					})
+			}
 		} else {
 			resp.InitBaseResponse(0x0005, respData)
 			c.JSON(http.StatusBadRequest, resp)
